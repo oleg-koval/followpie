@@ -1,5 +1,7 @@
 # Todo: 1. Decouple all methods 2. Make some structure and order 3. Documentation 4. Celery tasks
-
+from random import randint
+import time, random
+import urllib, json, urllib2
 # DO NOT TOUCH THESE THREE CONST VARIABLES
 POPULAR = 1
 LIKE = 2
@@ -7,19 +9,20 @@ LIKE_FOLLOW = 3
 UNFOLLOW = 4
 
 # Choose the tag you want to like based on, keep the word in double quotes, do not put a # sign in front of the tag
-TAGS = ["pope"]
+TAGS = ['william_eggleston', 'alec_soth', 'gybe', 'blues_harp']
 
 # IF YOU WANT THE ACTION TO FOLLOW OR LIKE SOMEONE BASED ON THE CHOSEN TAG CHANGE IT TO EITHER
 # ACTION=POPULAR   - Popular follows people who have liked an image on the popular page (this means they are active users)
 #   ACTION=LIKE
-#   ACTION=LIKE_FOLLOW
+# ACTION=LIKE_FOLLOW
 ACTION = LIKE
 
 #CHANGE THE NUMBER OF LIKES OR FOLLOWS YOU WANT TO OCCUR, e.g. NO MORE THEN 100 is the current setting
-MAX_COUNT = 1000
+MAX_COUNT = 10
 
 #MAX seconds is the number of seconds to randomly wait between doing your next follow or like (this helps to avoid acting like a crazy spam bot)
-MAX_SECS = 6
+
+MAX_SECS = randint(randint(40, 50), randint(55, 75))
 
 #Hit the URL below, the returned GET request will give you an auth token from Instagram.
 #
@@ -27,10 +30,10 @@ MAX_SECS = 6
 #DOES NOT NEED TO CHANGE UNLESS AUTH TOKEN EXPIRES
 #
 #
-#   https://api.instagram.com/oauth/authorize/?client_id=7f0d116c2920428e992970579ae55ca8&redirect_uri=http://localhost&response_type=token&display=touch&scope=likes+relationships
+#   https://api.instagram.com/oauth/authorize/?client_id=dasdasdasdasd&redirect_uri=http://localhost&response_type=token&display=touch&scope=likes+relationships
 #
-auth_token = "50703266.7f0d116.5effdc87aea24096a69d10cd3dcec1b5"
-client_id = '7f0d116c2920428e992970579ae55ca8'
+auth_token = 'dasdasdas'
+client_id = 'dasdasdas'
 
 ######DO NOT TOUCH ANYTHING UNDER HERE UNLESS YOU KNOW WHAT YOU ARE DOING, DANGER DANGER, SERIOUS PROBLEMS IF YOU TOUCH ###########
 
@@ -40,8 +43,6 @@ print "The script will now proceed"
 print ""
 print ""
 
-import time, random
-import urllib, json, urllib2
 user_agent = 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 5_1_1 like Mac OS X; en) AppleWebKit/534.46.0 (KHTML, like Gecko) CriOS/19.0.1084.60 Mobile/9B206 Safari/7534.48.3'
 # user_agent = 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_0 like Mac OS X; en-us) AppleWebKit/532.9 (KHTML, like Gecko) Version/4.0.5 Mobile/8A293 Safari/6531.22.7'
 headers = {'User-Agent': user_agent,
