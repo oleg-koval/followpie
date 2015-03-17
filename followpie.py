@@ -225,7 +225,7 @@ def likeAndFollowUser(userId):
     return numLikesFollows
 
 
-if (ACTION == LIKE or ACTION == LIKE_FOLLOW):
+if ACTION == LIKE or ACTION == LIKE_FOLLOW:
     def likeUsers(max_results, max_id, tag, c, fllw):
         urlFindLike = "https://api.instagram.com/v1/tags/%s/media/recent?client_id=%s&access_token=%s" % (
             tag, client_id, auth_token)
@@ -236,6 +236,7 @@ if (ACTION == LIKE or ACTION == LIKE_FOLLOW):
                   'max_id': max_id}
 
         f = urllib.urlopen(urlFindLike)
+        print f.read()
         dataObj = json.loads(f.read())
 
         f.close()
