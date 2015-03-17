@@ -2,7 +2,9 @@
 import time
 import random
 from random import randint
-import urllib, json, urllib2
+import urllib
+import json
+import urllib2
 # DO NOT TOUCH THESE THREE CONST VARIABLES
 POPULAR = 1
 LIKE = 2
@@ -10,7 +12,9 @@ LIKE_FOLLOW = 3
 UNFOLLOW = 4
 
 # Choose the tag you want to like based on, keep the word in double quotes, do not put a # sign in front of the tag
-TAGS = ['pope']
+# TAGS = ['william_egglestone', 'alec_soth', 'oleg_koval']
+# TAGS = ['vsco', 'cat']
+TAGS = ['paris']
 
 # IF YOU WANT THE ACTION TO FOLLOW OR LIKE SOMEONE BASED ON THE CHOSEN TAG CHANGE IT TO EITHER
 # ACTION=POPULAR   - Popular follows people who have liked an image on the popular page (this means they are active users)
@@ -22,8 +26,8 @@ ACTION = LIKE
 MAX_COUNT = 1000
 
 #MAX seconds is the number of seconds to randomly wait between doing your next follow or like (this helps to avoid acting like a crazy spam bot)
-# MAX_SECS = randint(randint(40, 50), randint(55, 75))
-MAX_SECS = 6
+MAX_SECS = randint(randint(40, 50), randint(55, 75))
+# MAX_SECS = 6
 
 
 #Hit the URL below, the returned GET request will give you an auth token from Instagram.
@@ -233,12 +237,16 @@ if (ACTION == LIKE or ACTION == LIKE_FOLLOW):
 
         f = urllib.urlopen(urlFindLike)
         dataObj = json.loads(f.read())
-        print dataObj['pagination']
+
         f.close()
         numResults = len(dataObj['data'])
         pictureId = 0
-        for likeObj in dataObj['data']:
+        paginationId = None
 
+        if not numResults:
+            print '[DEBUG] -- Empty data list, wait for new pictures'
+
+        for likeObj in dataObj['data']:
             pictureId = likeObj['id']
             dataObj_pagination = dataObj["pagination"]
             if 'next_max_id' in dataObj_pagination or 'max_tag_id' in dataObj_pagination:
@@ -247,9 +255,8 @@ if (ACTION == LIKE or ACTION == LIKE_FOLLOW):
                 except Exception, e:
                     print e
                     paginationId = dataObj_pagination['max_tag_id']
-                except Exception, e:
-                    print e
-                    return
+            else:
+                continue
 
             user = likeObj['user']
             userId = user['id']
@@ -268,7 +275,7 @@ if (ACTION == LIKE or ACTION == LIKE_FOLLOW):
                     fresult = followUser(userId)
                     fllw = fllw + fresult
                 c = c + result
-                seconds = random.randint(1, MAX_SECS)
+                seconds = random.randint(30, MAX_SECS)
                 time.sleep(seconds)
                 if (c % 10 == 0):
                     print "Liked %s:  %s" % (tag, c)
@@ -308,7 +315,7 @@ elif ACTION == POPULAR:
                 l = l + result
                 if c % 10 == 0:
                     print "Followed %s" % c
-                seconds = random.randint(1, MAX_SECS)
+                seconds = random.randint(30, MAX_SECS)
                 time.sleep(seconds)
             except Exception, e:
                 print e
