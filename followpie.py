@@ -1,6 +1,7 @@
 # Todo: 1. Decouple all methods 2. Make some structure and order 3. Documentation 4. Celery tasks
+import time
+import random
 from random import randint
-import time, random
 import urllib, json, urllib2
 # DO NOT TOUCH THESE THREE CONST VARIABLES
 POPULAR = 1
@@ -9,7 +10,7 @@ LIKE_FOLLOW = 3
 UNFOLLOW = 4
 
 # Choose the tag you want to like based on, keep the word in double quotes, do not put a # sign in front of the tag
-TAGS = ['william_eggleston', 'alec_soth', 'gybe', 'blues_harp']
+TAGS = ['pope']
 
 # IF YOU WANT THE ACTION TO FOLLOW OR LIKE SOMEONE BASED ON THE CHOSEN TAG CHANGE IT TO EITHER
 # ACTION=POPULAR   - Popular follows people who have liked an image on the popular page (this means they are active users)
@@ -18,11 +19,12 @@ TAGS = ['william_eggleston', 'alec_soth', 'gybe', 'blues_harp']
 ACTION = LIKE
 
 #CHANGE THE NUMBER OF LIKES OR FOLLOWS YOU WANT TO OCCUR, e.g. NO MORE THEN 100 is the current setting
-MAX_COUNT = 10
+MAX_COUNT = 1000
 
 #MAX seconds is the number of seconds to randomly wait between doing your next follow or like (this helps to avoid acting like a crazy spam bot)
+# MAX_SECS = randint(randint(40, 50), randint(55, 75))
+MAX_SECS = 6
 
-MAX_SECS = randint(randint(40, 50), randint(55, 75))
 
 #Hit the URL below, the returned GET request will give you an auth token from Instagram.
 #
@@ -32,8 +34,8 @@ MAX_SECS = randint(randint(40, 50), randint(55, 75))
 #
 #   https://api.instagram.com/oauth/authorize/?client_id=dasdasdasdasd&redirect_uri=http://localhost&response_type=token&display=touch&scope=likes+relationships
 #
-auth_token = 'dasdasdas'
-client_id = 'dasdasdas'
+auth_token = "50703266.7f0d116.5effdc87aea24096a69d10cd3dcec1b5"
+client_id = '7f0d116c2920428e992970579ae55ca8'
 
 ######DO NOT TOUCH ANYTHING UNDER HERE UNLESS YOU KNOW WHAT YOU ARE DOING, DANGER DANGER, SERIOUS PROBLEMS IF YOU TOUCH ###########
 
@@ -43,8 +45,10 @@ print "The script will now proceed"
 print ""
 print ""
 
-user_agent = 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 5_1_1 like Mac OS X; en) AppleWebKit/534.46.0 (KHTML, like Gecko) CriOS/19.0.1084.60 Mobile/9B206 Safari/7534.48.3'
-# user_agent = 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_0 like Mac OS X; en-us) AppleWebKit/532.9 (KHTML, like Gecko) Version/4.0.5 Mobile/8A293 Safari/6531.22.7'
+
+
+# user_agent = 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 5_1_1 like Mac OS X; en) AppleWebKit/534.46.0 (KHTML, like Gecko) CriOS/19.0.1084.60 Mobile/9B206 Safari/7534.48.3'
+user_agent = 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_0 like Mac OS X; en-us) AppleWebKit/532.9 (KHTML, like Gecko) Version/4.0.5 Mobile/8A293 Safari/6531.22.7'
 headers = {'User-Agent': user_agent,
            "Content-type": "application/x-www-form-urlencoded"
 }
@@ -229,13 +233,24 @@ if (ACTION == LIKE or ACTION == LIKE_FOLLOW):
 
         f = urllib.urlopen(urlFindLike)
         dataObj = json.loads(f.read())
+        print dataObj['pagination']
         f.close()
         numResults = len(dataObj['data'])
         pictureId = 0
         for likeObj in dataObj['data']:
-            print ''
+
             pictureId = likeObj['id']
-            paginationId = dataObj["pagination"]['next_max_id']
+            dataObj_pagination = dataObj["pagination"]
+            if 'next_max_id' in dataObj_pagination or 'max_tag_id' in dataObj_pagination:
+                try:
+                    paginationId = dataObj_pagination['next_max_id']
+                except Exception, e:
+                    print e
+                    paginationId = dataObj_pagination['max_tag_id']
+                except Exception, e:
+                    print e
+                    return
+
             user = likeObj['user']
             userId = user['id']
             try:
@@ -266,7 +281,6 @@ if (ACTION == LIKE or ACTION == LIKE_FOLLOW):
         if c != max_results:
             likeUsers(max_results, paginationId, tag, c, fllw)
         return c, fllw
-        print ''
 
     for tag in TAGS:
         c = 0
