@@ -13,8 +13,8 @@ UNFOLLOW = 4
 
 # Choose the tag you want to like based on, keep the word in double quotes, do not put a # sign in front of the tag
 # TAGS = ['william_egglestone', 'alec_soth', 'oleg_koval']
-# TAGS = ['vsco', 'cat']
-TAGS = ['paris']
+TAGS = ['vsco', 'cat']
+# TAGS = ['paris']
 
 # IF YOU WANT THE ACTION TO FOLLOW OR LIKE SOMEONE BASED ON THE CHOSEN TAG CHANGE IT TO EITHER
 # ACTION=POPULAR   - Popular follows people who have liked an image on the popular page (this means they are active users)
@@ -236,7 +236,6 @@ if ACTION == LIKE or ACTION == LIKE_FOLLOW:
                   'max_id': max_id}
 
         f = urllib.urlopen(urlFindLike)
-        print f.read()
         dataObj = json.loads(f.read())
 
         f.close()
