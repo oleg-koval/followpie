@@ -5,6 +5,7 @@ from random import randint
 import urllib
 import json
 import urllib2
+import requests
 # DO NOT TOUCH THESE THREE CONST VARIABLES
 POPULAR = 1
 LIKE = 2
